@@ -1,4 +1,4 @@
-load cf_output/Example_Protein_unrelaxed_rank_001_alphafold2_ptm_model_5_seed_000.pdb
+load Example_Protein_unrelaxed_rank_001_alphafold2_ptm_model_5_seed_000.pdb
 hide everything
 show cartoon
 set_color shap1, [0.33, 0.67, 0]
