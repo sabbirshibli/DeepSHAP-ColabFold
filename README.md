@@ -82,8 +82,9 @@ python shap_viz.py
 
 ## 📊 Sample Visualization of GFP with mapped SHAP
 
-![Sample Visualization](DeepSHAP-ColabFold/assets/gfp_shap_mapped.png)
+![Sample Visualization](assets/gfp_shap_mapped.png)
 
+---
 
 ## 💡 Bonus: Installing PyMOL locally
 
