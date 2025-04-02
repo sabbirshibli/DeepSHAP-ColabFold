@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+*.log
+*.npy
+*.pdb
+*.pkl
+*.pt
+cf_output/
+.colabfold/
+.storage/
+*.DS_Store
