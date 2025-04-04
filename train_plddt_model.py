@@ -34,11 +34,13 @@ X_tensor = torch.tensor(X).unsqueeze(0).to(device)
 json_file = [f for f in os.listdir(cf_output) if f.endswith(".json") and "_scores" in f][0]
 with open(os.path.join(cf_output, json_file)) as f:
     plddt = np.array(json.load(f)["plddt"], dtype=np.float32)
+
+# 🔥 Use full 456-length output, no slicing
 y_tensor = torch.tensor(plddt).unsqueeze(0).to(device)
 
 # ==== Build Model and Train ====
 input_len = X.shape[0]
-output_len = plddt.shape[0]
+output_len = plddt.shape[0]  # This should now be 456
 model = PlddtMLP(input_len, output_len).to(device)
 
 optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
