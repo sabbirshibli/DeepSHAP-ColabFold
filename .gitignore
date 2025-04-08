@@ -4,3 +4,4 @@ __pycache__/
 .storage/
 *.DS_Store
 *.ini
+.gitignore
