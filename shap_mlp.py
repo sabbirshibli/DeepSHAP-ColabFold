@@ -1,4 +1,5 @@
 # shap_mlp.py
+# Sabbir Ahmed Sibli
 
 import os
 import json
@@ -11,7 +12,7 @@ import sys
 import random
 from plddt_model import load_trained_model
 
-# === Fix randomness for reproducibility ===
+# Fix randomness for reproducibility
 random.seed(42)
 np.random.seed(42)
 torch.manual_seed(42)
@@ -20,13 +21,13 @@ fasta_file = sys.argv[1]
 cf_output = sys.argv[2]
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-# === Load sequence ===
+# Load sequence
 def load_sequence(fasta_path):
     with open(fasta_path) as f:
         lines = f.readlines()
     return "".join([l.strip() for l in lines if not l.startswith(">")])
 
-# === One-hot encoding ===
+# One-hot encoding
 def one_hot_encode(seq):
     aa_dict = {aa: i for i, aa in enumerate("ACDEFGHIKLMNPQRSTVWY")}
     encoded = np.zeros((len(seq), 20))
@@ -39,7 +40,7 @@ sequence = load_sequence(fasta_file)
 X = one_hot_encode(sequence).astype(np.float32)
 test_input = np.array([X])
 
-# === Generate or load mutated background ===
+# Generate or load mutated background
 def generate_mutated_background(seq, num_samples=20, mutation_rate=0.15):
     aa_list = list("ACDEFGHIKLMNPQRSTVWY")
     original_seq = np.array(list(seq))
@@ -57,15 +58,15 @@ def generate_mutated_background(seq, num_samples=20, mutation_rate=0.15):
 
 bg_path = os.path.join(cf_output, "fixed_background.npy")
 if os.path.exists(bg_path):
-    print("📂 Loading saved background...")
+    print(" Loading saved background...")
     background = np.load(bg_path)
 else:
     print("🧬 Generating new background...")
     background = generate_mutated_background(sequence, num_samples=20, mutation_rate=0.15)
     np.save(bg_path, background)
-    print(f"💾 Background saved to {bg_path}")
+    print(f" Background saved to {bg_path}")
 
-# === Load pLDDT output ===
+# Load pLDDT output
 json_file = [f for f in os.listdir(cf_output) if f.endswith(".json") and "_scores" in f][0]
 with open(os.path.join(cf_output, json_file)) as f:
     plddt = np.array(json.load(f)["plddt"], dtype=np.float32)
@@ -74,32 +75,32 @@ input_len = X.shape[0]
 output_len = len(plddt)
 model_path = os.path.join(cf_output, "plddt_mlp_model.pt")
 
-# === Load trained model ===
+# Load trained model
 model = load_trained_model(input_len, output_len, model_path, device)
 
-# === SHAP using DeepExplainer ===
+# SHAP using DeepExplainer
 def predict_fn(x):
     with torch.no_grad():
         return model(torch.tensor(x, dtype=torch.float32).to(device)).cpu().numpy()
 
-print("🔍 Running DeepSHAP with Fixed Background...")
+print("Running DeepSHAP with Fixed Background...")
 explainer = shap.DeepExplainer(model, torch.tensor(background).float().to(device))
 shap_values = explainer.shap_values(torch.tensor(test_input).float().to(device))[0]
 
-# === SHAP Matrix and Normalization ===
+# SHAP Matrix and Normalization
 reshaped = shap_values.reshape(output_len, len(sequence), 20)
 shap_scores = reshaped.sum(axis=(1, 2))
 norm_scores = shap_scores / np.sum(np.abs(shap_scores))
 
-# === DEBUGGING Predictions ===
-print("\n🔎 DEBUGGING PREDICTIONS:")
+# DEBUGGING Predictions
+print("\nDEBUGGING PREDICTIONS:")
 mutated_input = background[0]
 pred_mutated = predict_fn(np.array([mutated_input]))
 pred_real = predict_fn(np.array([X]))
 print(f"Mean prediction (real input): {pred_real.mean():.4f}")
 print(f"Mean prediction (mutated input): {pred_mutated.mean():.4f}\n")
 
-# === Plot SHAP Scores ===
+# Plot SHAP Scores
 plt.figure(figsize=(14,4))
 plt.plot(shap_scores, color='blue', label='Raw SHAP Scores')
 plt.axhline(0, color='gray', linestyle='--')
@@ -132,7 +133,7 @@ plt.tight_layout()
 plt.savefig(os.path.join(cf_output, "shap_histogram.png"))
 plt.show()
 
-# === Save outputs ===
+# Save outputs
 combined_df = pd.DataFrame({
     "Residue_Index": np.arange(1, output_len + 1),
     "SHAP_Score": shap_scores,
@@ -143,7 +144,7 @@ combined_df.to_csv(os.path.join(cf_output, "shap_plddt_combined.csv"), index=Fal
 np.save(os.path.join(cf_output, "shap_values.npy"), shap_values)
 np.save(os.path.join(cf_output, "input_vector.npy"), X)
 
-print("\n✅ Done! SHAP results saved to:")
+print("\n Done! SHAP results saved to:")
 print(" - raw_shap_plot.png")
 print(" - normalized_shap_plot.png")
 print(" - shap_histogram.png")
