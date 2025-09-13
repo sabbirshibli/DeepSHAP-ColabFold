@@ -61,7 +61,7 @@ if os.path.exists(bg_path):
     print(" Loading saved background...")
     background = np.load(bg_path)
 else:
-    print("🧬 Generating new background...")
+    print(" Generating new background...")
     background = generate_mutated_background(sequence, num_samples=20, mutation_rate=0.15)
     np.save(bg_path, background)
     print(f" Background saved to {bg_path}")
