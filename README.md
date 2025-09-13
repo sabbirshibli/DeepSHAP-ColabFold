@@ -121,7 +121,10 @@ Inside PyMOL:
 ## Citation
 
 If you use this project in your research or tools, please cite the following article:
+
+```bash
 Sibli, Sabbir Ahmed, Vlasios Panagiotis Panagiotou, and Christos Makris. "Enhancing protein structure predictions: DeepSHAP as a tool for understanding AlphaFold2." Expert Systems with Applications (2025): 127853.
+```
 
 ---
 
