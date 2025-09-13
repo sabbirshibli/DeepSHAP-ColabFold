@@ -1,4 +1,5 @@
-# plddt_model.py
+# plddt_model.py for Surrogate Model Development
+# Sabbir Ahmed Sibli
 
 import torch
 import torch.nn as nn
@@ -11,7 +12,7 @@ class PlddtMLP(nn.Module):
             nn.ReLU(),
             nn.Linear(512, 256),
             nn.ReLU(),
-            nn.Linear(256, output_len)  # 🔥 Output matches full pLDDT length
+            nn.Linear(256, output_len)  # Output matches full pLDDT length
         )
 
     def forward(self, x):
