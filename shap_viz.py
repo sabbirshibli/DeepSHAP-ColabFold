@@ -1,3 +1,6 @@
+# Additional script to do interactive visualization
+# Sabbir Ahmed Sibli
+
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -5,12 +8,12 @@ import numpy as np
 import os
 from matplotlib.patches import Polygon
 
-# === Load Data ===
+# Load Data
 input_path = "cf_output/shap_plddt_combined.csv"
 output_dir = "cf_output"
 df = pd.read_csv(input_path)
 
-# === 1. SHAP-style Colored Scatter Plot ===
+# 1. SHAP-style Colored Scatter Plot
 plt.figure(figsize=(12, 6))
 scatter = plt.scatter(
     df["Residue_Index"],
@@ -34,7 +37,7 @@ plt.tight_layout()
 plt.savefig(os.path.join(output_dir, "shap_scatter_plot.png"), dpi=300)
 plt.show()
 
-# === 2. SHAP-style Waterfall Plot with Gradient Bars ===
+# 2. SHAP-style Waterfall Plot with Gradient Bars
 
 # Select top 10 residues by absolute SHAP value
 top_df = df.reindex(df["Normalized_SHAP"].abs().sort_values(ascending=False).index).head(10)
@@ -120,4 +123,4 @@ plt.tight_layout()
 plt.savefig(os.path.join(output_dir, "shap_waterfall_plot.png"), dpi=300)
 plt.show()
 
-print(f"✅ SHAP Scatterplot and Waterfall Plot saved to: {output_dir}")
+print(f" SHAP Scatterplot and Waterfall Plot saved to: {output_dir}")
