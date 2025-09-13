@@ -2,7 +2,7 @@ import os
 import re
 import pandas as pd
 
-# === Auto-detect files ===
+# Auto-detect files
 cf_output = "cf_output"
 csv_file = os.path.join(cf_output, "shap_plddt_combined.csv")
 
@@ -18,12 +18,12 @@ if pdb_file is None:
 
 output_pml = os.path.join(cf_output, "colored_shap_gradient.pml")
 
-# === Load SHAP values ===
+# Load SHAP values
 df = pd.read_csv(csv_file)
 shap = df["SHAP_Score"].values
 resi = df["Residue_Index"].values
 
-# === Normalize SHAP scores for RGB mapping ===
+# Normalize SHAP scores for RGB mapping
 min_val, max_val = shap.min(), shap.max()
 pml_lines = [
     f'load {pdb_file}',
@@ -31,7 +31,7 @@ pml_lines = [
     'show cartoon',
 ]
 
-# === Create coloring commands ===
+# Create coloring commands
 for i, (val, r) in enumerate(zip(shap, resi), 1):
     norm = (val - min_val) / (max_val - min_val + 1e-9)
     r_val = round(norm, 2)       # red for high SHAP
@@ -40,9 +40,9 @@ for i, (val, r) in enumerate(zip(shap, resi), 1):
     pml_lines.append(f'set_color shap{i}, [{r_val}, {g_val}, {b_val}]')
     pml_lines.append(f'color shap{i}, resi {int(r)}')
 
-# === Save PML script ===
+# Save PML script
 with open(output_pml, "w") as f:
     f.write("\n".join(pml_lines))
 
-print(f"✅ Gradient-colored PyMOL script saved to: {output_pml}")
+print(f" Gradient-colored PyMOL script saved to: {output_pml}")
 
