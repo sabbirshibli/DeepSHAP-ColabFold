@@ -5,10 +5,10 @@ import subprocess
 fasta_path = sys.argv[1]
 output_dir = sys.argv[2]
 
-# 🔧 Fix for disk quota: redirect model download cache
+# Fix for disk quota: redirect model download cache (This is for my HPC, avoid if you don't need)
 os.environ["XDG_CACHE_HOME"] = "/storage/data2/ahmed_sibli/.cache"
 
-print(f"📡 Running ColabFold on {fasta_path}...")
+print(f" Running ColabFold on {fasta_path}...")
 
 command = [
     "colabfold_batch",
@@ -20,4 +20,4 @@ command = [
 ]
 
 subprocess.run(command, check=True)
-print("✅ ColabFold prediction complete.")
+print("ColabFold prediction complete!")
