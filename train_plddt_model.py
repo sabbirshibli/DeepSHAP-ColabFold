@@ -1,4 +1,5 @@
-# train_plddt_model.py
+# train_plddt_model.py - For model training
+# Sabbir Ahmed Sibli
 
 import os
 import sys
@@ -7,12 +8,12 @@ import torch
 import numpy as np
 from plddt_model import PlddtMLP
 
-# ==== Inputs ====
+# Inputs
 fasta_file = sys.argv[1]
 cf_output = sys.argv[2]
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-# ==== Helper Functions ====
+# Helper Functions
 def load_sequence(fasta_path):
     with open(fasta_path) as f:
         lines = f.readlines()
@@ -26,7 +27,7 @@ def one_hot_encode(seq):
             encoded[i, aa_dict[aa]] = 1
     return encoded.flatten()
 
-# ==== Load Data ====
+# Load Data
 sequence = load_sequence(fasta_file)
 X = one_hot_encode(sequence).astype(np.float32)
 X_tensor = torch.tensor(X).unsqueeze(0).to(device)
@@ -35,10 +36,10 @@ json_file = [f for f in os.listdir(cf_output) if f.endswith(".json") and "_score
 with open(os.path.join(cf_output, json_file)) as f:
     plddt = np.array(json.load(f)["plddt"], dtype=np.float32)
 
-# 🔥 Use full 456-length output, no slicing
+# Use full 456-length output, no slicing
 y_tensor = torch.tensor(plddt).unsqueeze(0).to(device)
 
-# ==== Build Model and Train ====
+# Build Model and Train
 input_len = X.shape[0]
 output_len = plddt.shape[0]  # This should now be 456
 model = PlddtMLP(input_len, output_len).to(device)
@@ -46,7 +47,7 @@ model = PlddtMLP(input_len, output_len).to(device)
 optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
 loss_fn = torch.nn.MSELoss()
 
-print("🧠 Training model...")
+print(" Training model...")
 for epoch in range(300):
     model.train()
     optimizer.zero_grad()
@@ -58,5 +59,5 @@ for epoch in range(300):
         print(f"Epoch {epoch+1:>3} | Loss: {loss.item():.4f}")
 
 torch.save(model.state_dict(), os.path.join(cf_output, "plddt_mlp_model.pt"))
-print("✅ Model saved.")
+print(" Model saved.")
 
