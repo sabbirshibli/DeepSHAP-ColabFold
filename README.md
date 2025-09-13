@@ -4,7 +4,7 @@ This project demonstrates how to apply DeepSHAP Explainable AI to interpret pLDD
 
 ---
 
-## 🔧 Installation (Tested on NVIDIA DGX)
+## Installation (Tested on NVIDIA DGX)
 
 ### Step 1: Create and activate a new virtual environment
 
@@ -21,7 +21,7 @@ pip install "colabfold[batch,alphafold]"
 
 ---
 
-## 📁 Folder Structure
+## Folder Structure
 
 ```
 colab_deepshap/
@@ -42,7 +42,7 @@ colab_deepshap/
 
 ---
 
-## ▶️ How to Run
+## How to Run
 
 1. **Run AlphaFold2 predictions with ColabFold**
 
@@ -64,7 +64,7 @@ python shap_mlp.py data/input.fasta cf_output
 
 ---
 
-## 🧪 Optional Visualization Scripts
+## Optional Visualization Scripts
 
 - **Gradient-based SHAP coloring in PyMOL** (requires PyMOL installed):
 
@@ -80,13 +80,13 @@ python shap_viz.py
 
 ---
 
-## 📊 Sample Visualization of GFP with mapped SHAP
+## Sample Visualization of GFP with mapped SHAP
 
 ![Sample Visualization](assets/gfp_shap_mapped.png)
 
 ---
 
-## 💡 Bonus: Installing PyMOL locally
+## Bonus: Installing PyMOL locally
 
 > For visualizing 3D colored SHAP scores in PyMOL:
 
@@ -110,7 +110,7 @@ Inside PyMOL:
 
 ---
 
-## 🧠 Notes
+## Notes
 
 - SHAP results are made reproducible by caching the background (`fixed_background.npy`).
 - Model definitions are modularized in `plddt_model.py` for reuse.
@@ -118,9 +118,10 @@ Inside PyMOL:
 
 ---
 
-## 📌 Citation
+## Citation
 
-If you use this project in your research or tools, please cite the authors and the source appropriately.
+If you use this project in your research or tools, please cite the following article:
+Sibli, Sabbir Ahmed, Vlasios Panagiotis Panagiotou, and Christos Makris. "Enhancing protein structure predictions: DeepSHAP as a tool for understanding AlphaFold2." Expert Systems with Applications (2025): 127853.
 
 ---
 
